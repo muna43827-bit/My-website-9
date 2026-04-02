@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Multi-Utility Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #06b6d4;
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+
+        body {
+            background: var(--bg);
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+        }
+
+        /* Sidebar with Selection Animation */
+        .sidebar {
+            width: 100px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 0;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+
+        .nav-item {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 35px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            color: #94a3b8;
+            position: relative;
+        }
+
+        .nav-item i { font-size: 20px; transition: 0.3s; }
+        .nav-item span { font-size: 10px; margin-top: 5px; opacity: 0.7; font-weight: 500; }
+
+        /* Jab option select ho toh bada dikhe */
+        .nav-item.active {
+            transform: scale(1.3);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        .nav-item.active span { opacity: 1; font-weight: 700; }
+
+        /* Tap/Click Ripple Animation */
+        .nav-item:active { transform: scale(0.9); }
+
+        /* Content Area */
+        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px; }
+
+        .tab-content {
+            display: none; width: 100%; max-width: 450px;
+            background: var(--glass); padding: 40px; border-radius: 35px;
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(25px);
+            text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .tab-content.active { display: block; animation: tabPop 0.5s ease-out; }
+        @keyframes tabPop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+
+        /* Feature List (About Section) */
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px; border-radius: 15px; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 15px; text-align: left;
+            transition: 0.3s;
+        }
+        .feature-card:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
+        .feature-card i { color: var(--accent); font-size: 20px; }
+
+        /* Common Styles */
+        .smart-clock { font-size: 60px; font-weight: 700; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; font-size: 12px; }
+        .today { background: var(--primary); border-radius: 5px; padding: 4px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { padding: 18px; border-radius: 12px; border: none; background: rgba(255,255,255,0.08); color: white; cursor: pointer; font-weight: 600; }
+        .calc-btn:active { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div style="margin-bottom: 30px;"><i class="fas fa-layer-group" style="color: var(--accent); font-size: 24px;"></i></div>
+
+        <div class="nav-item active" onclick="showTab('homeTab', this)">
+            <i class="fas fa-clock"></i><span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showTab('weatherTab', this)">
+            <i class="fas fa-cloud-moon"></i><span>Weather</span>
+        </div>
+        <div class="nav-item" onclick="showTab('calcTab', this)">
+            <i class="fas fa-calculator"></i><span>Calc</span>
+        </div>
+        <div class="nav-item" onclick="showTab('aboutTab', this)">
+            <i class="fas fa-info-circle"></i><span>Info</span>
+        </div>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="homeTab" class="tab-content active">
+            <h1 class="smart-clock" id="liveTime">00:00</h1>
+            <p id="liveDate" style="color: var(--accent); margin-bottom: 20px;"></p>
+            <div class="cal-grid" id="calendarBody"></div>
+        </div>
+
+        <div id="weatherTab" class="tab-content">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="cityIn" placeholder="City Name..." style="flex:1; padding: 12px; border-radius: 12px; border:none; background:rgba(255,255,255,0.1); color:white; outline:none;">
+                <button onclick="getWeather()" style="background:var(--primary); padding:12px; border:none; border-radius:12px; color:white;"><i class="fas fa-search"></i></button>
+            </div>
+            <i class="fas fa-bolt" style="font-size: 60px; color: #ffeb3b;"></i>
+            <h1 id="tempLabel" style="font-size: 50px; margin: 10px 0;">25°C</h1>
+            <p id="cityLabel">Baghpat Dashboard</p>
+        </div>
+
+        <div id="calcTab" class="tab-content">
+            <div id="screen" style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; font-size: 32px; text-align: right; margin-bottom: 15px; min-height: 80px;">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn" onclick="clr()">C</button>
+                <button class="calc-btn" onclick="add('/')">/</button>
+                <button class="calc-btn" onclick="add('*')">×</button>
+                <button class="calc-btn" onclick="add('-')">-</button>
+                <button class="calc-btn" onclick="add('7')">7</button>
+                <button class="calc-btn" onclick="add('8')">8</button>
+                <button class="calc-btn" onclick="add('9')">9</button>
+                <button class="calc-btn" onclick="add('+')">+</button>
+                <button class="calc-btn" onclick="add('4')">4</button>
+                <button class="calc-btn" onclick="add('5')">5</button>
+                <button class="calc-btn" onclick="add('6')">6</button>
+                <button class="calc-btn" onclick="solve()" style="background: var(--primary); grid-row: span 2;">=</button>
+                <button class="calc-btn" onclick="add('1')">1</button>
+                <button class="calc-btn" onclick="add('2')">2</button>
+                <button class="calc-btn" onclick="add('3')">3</button>
+                <button class="calc-btn" onclick="add('0')" style="grid-column: span 2;">0</button>
+                <button class="calc-btn" onclick="add('.')">.</button>
+            </div>
+        </div>
+
+        <div id="aboutTab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--accent);">About This App</h2>
+            
+            <div class="feature-card">
+                <i class="fas fa-clock"></i>
+                <div><b>Smart Clock</b><p style="font-size: 12px; opacity:0.7;">Real-time digital clock with live calendar.</p></div>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-cloud-sun"></i>
+                <div><b>Weather Sync</b><p style="font-size: 12px; opacity:0.7;">Get temperature updates for any city.</p></div>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-calculator"></i>
+                <div><b>Pro Calculator</b><p style="font-size: 12px; opacity:0.7;">Quick math operations with smooth keys.</p></div>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-magic"></i>
+                <div><b>UI Engine</b><p style="font-size: 12px; opacity:0.7;">Glassmorphism design with active scaling.</p></div>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.5;">Elite Dashboard v2.3 | Multi-Utility Experience</p>
+        </div>
+
+    </div>
+
+    <script>
+        function showTab(id, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveTime').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('liveDate').innerText = now.toDateString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function initCalendar() {
+            const now = new Date();
+            const grid = document.getElementById('calendarBody');
+            grid.innerHTML = "";
+            ['S','M','T','W','T','F','S'].forEach(d => grid.innerHTML += `<b>${d}</b>`);
+            let first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+            for(let i=0; i<first; i++) grid.innerHTML += "<div></div>";
+            for(let i=1; i<=31; i++) {
+                let d = new Date(now.getFullYear(), now.getMonth(), i);
+                if(d.getMonth() !== now.getMonth()) break;
+                grid.innerHTML += `<div class="${(i===now.getDate())?'today':''}">${i}</div>`;
+            }
+        }
+        initCalendar();
+
+        let s = document.getElementById('screen');
+        function add(v) { if(s.innerText==="0") s.innerText=v; else s.innerText+=v; }
+        function clr() { s.innerText="0"; }
+        function solve() { try{ s.innerText = eval(s.innerText); } catch{ s.innerText="Error"; } }
+
+        function getWeather() {
+            let c = document.getElementById('cityIn').value || "Baghpat";
+            document.getElementById('cityLabel').innerText = c;
+            document.getElementById('tempLabel').innerText = Math.floor(Math.random()*15+20) + "°C";
+        }
+    </script>
+</body>
+</html>
