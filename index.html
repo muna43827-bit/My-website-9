@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CCW 786 | My Website</title>
-</head>
-
- <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Multi-Utility Dashboard</title>
+    <title>CCW 786 | Dashboard</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -31,7 +28,7 @@
                               radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
         }
 
-        /* Sidebar with Selection Animation */
+        /* Sidebar */
         .sidebar {
             width: 100px;
             background: var(--glass);
@@ -62,7 +59,6 @@
         .nav-item i { font-size: 20px; transition: 0.3s; }
         .nav-item span { font-size: 10px; margin-top: 5px; opacity: 0.7; font-weight: 500; }
 
-        /* Jab option select ho toh bada dikhe */
         .nav-item.active {
             transform: scale(1.3);
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -71,7 +67,6 @@
         }
         .nav-item.active span { opacity: 1; font-weight: 700; }
 
-        /* Tap/Click Ripple Animation */
         .nav-item:active { transform: scale(0.9); }
 
         /* Content Area */
@@ -87,7 +82,7 @@
         .tab-content.active { display: block; animation: tabPop 0.5s ease-out; }
         @keyframes tabPop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
 
-        /* Feature List (About Section) */
+        /* Feature Card */
         .feature-card {
             background: rgba(255,255,255,0.05);
             padding: 15px; border-radius: 15px; margin-bottom: 12px;
@@ -97,7 +92,7 @@
         .feature-card:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
         .feature-card i { color: var(--accent); font-size: 20px; }
 
-        /* Common Styles */
+        /* Components */
         .smart-clock { font-size: 60px; font-weight: 700; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; font-size: 12px; }
         .today { background: var(--primary); border-radius: 5px; padding: 4px; }
@@ -140,7 +135,7 @@
             </div>
             <i class="fas fa-bolt" style="font-size: 60px; color: #ffeb3b;"></i>
             <h1 id="tempLabel" style="font-size: 50px; margin: 10px 0;">25°C</h1>
-            <p id="cityLabel">Baghpat Dashboard</p>
+            <p id="cityLabel">CCW Dashboard</p>
         </div>
 
         <div id="calcTab" class="tab-content">
@@ -167,7 +162,12 @@
         </div>
 
         <div id="aboutTab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--accent);">About This App</h2>
+            <h2 style="margin-bottom: 20px; color: var(--accent);">About CCW 786</h2>
+            
+            <div class="feature-card">
+                <i class="fas fa-shield-halved"></i>
+                <div><b>CCW Security</b><p style="font-size: 12px; opacity:0.7;">Advanced digital solutions and monitoring tools.</p></div>
+            </div>
             
             <div class="feature-card">
                 <i class="fas fa-clock"></i>
@@ -180,16 +180,11 @@
             </div>
             
             <div class="feature-card">
-                <i class="fas fa-calculator"></i>
-                <div><b>Pro Calculator</b><p style="font-size: 12px; opacity:0.7;">Quick math operations with smooth keys.</p></div>
-            </div>
-
-            <div class="feature-card">
                 <i class="fas fa-magic"></i>
                 <div><b>UI Engine</b><p style="font-size: 12px; opacity:0.7;">Glassmorphism design with active scaling.</p></div>
             </div>
             
-            <p style="margin-top: 15px; font-size: 12px; opacity: 0.5;">Elite Dashboard v2.3 | Multi-Utility Experience</p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.5;">CCW Dashboard v2.3 | Official Build</p>
         </div>
 
     </div>
@@ -232,7 +227,7 @@
 
         function getWeather() {
             let c = document.getElementById('cityIn').value || "Baghpat";
-            document.getElementById('cityLabel').innerText = c;
+            document.getElementById('cityLabel').innerText = c + " Dashboard";
             document.getElementById('tempLabel').innerText = Math.floor(Math.random()*15+20) + "°C";
         }
     </script>
